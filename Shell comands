@@ -1,0 +1,96 @@
+from news.models import * # импортируем модели для работы с ними через shell
+import datetime  # импортируем модуль работы с форматом времени
+from datetime import datetime # импортируем модуль работы с форматом времени
+
+# создаем пользователей
+User.objects.create_user('username1'))
+User.objects.create_user('username2'))
+User.objects.create_user('username3'))
+
+# создаем авторов связанных с пользователями
+Author.objects.create(user_id=1)
+Author.objects.create(user_id=2)
+Author.objects.create(user_id=3)
+
+# создаем категории
+Category.objects.create(category='sport')
+Category.objects.create(category='news')
+Category.objects.create(category='policy')
+Category.objects.create(category='food')
+Category.objects.create(category='trips')
+Category.objects.create(category='Coding')
+
+# добавляем 2 статьи и новость
+Post = Post.objects.create(Post_author_id=1, Post_News_choice=True, Title = 'First news', Text_post = '')
+Post1 = Post.objects.create(Post_author_id=1, Post_News_choice=True, Title = Странствующий Ангел, Text_post = '')
+News = Post.objects.create(Post_author_id=2, Post_News_choice=False, Title = 'First news', Text_post = '')
+
+
+# присваиваем категории Trips и Sport Post c id=1
+Trips=Category.objects.get(pk=5)
+# Создаем связь
+Post_cat=PostCategory(Post=Post, Category=Trips)
+Post_cat.save
+Sport=Category.objects.get(pk=1)
+# Создаем связь
+Post_cat=PostCategory(Post=Post, Category=Sport)
+Post_cat.save
+# присваиваем категории Trips, News Post с id=2
+Trips=Category.objects.get(pk=5)
+CatNews=Category.objects.get(pk=2)
+# Создаем связи
+Post_cat=PostCategory(Post=Post1, Category=Trips)
+Post_cat.save()
+Post_cat=PostCategory(Post=Post1, Category= CatNews)
+Post_cat.save()
+# Post c id=3 присваиваем категории News и Coding
+Coding= Category.objects.get(pk=6)
+Создаем связь
+News_cat=PostCategory(Post=News, Category=CatNews)
+News_cat1=PostCategory(Post=News, Category=Coding)
+News_cat.save()
+News_cat1.save()
+
+# Коментируем пост 1
+Comments.objects.create(Post_id=1, User_id=3, Text_comment='Отличная новость' )
+Comments.objects.create(Post_id=1, User_id=2, Text_comment='Коментарий' )
+Comments.objects.create(Post_id=1, User_id=2, Text_comment='Повторный коментарий' )
+# Коментируем пост 2
+Comments.objects.create(Post_id=2, User_id=1, Text_comment='Хорошо написано' )
+Comments.objects.create(Post_id=2, User_id=1, Text_comment='Поддерживаю' )
+Comments.objects.create(Post_id=2, User_id=2, Text_comment='Мне нравится' )
+# Коментируем пост 3
+Comments.objects.create(Post_id=3, User_id=3, Text_comment='Хорошо написано' )
+Comments.objects.create(Post_id=3, User_id=3, Text_comment='Поддерживаю' )
+Comments.objects.create(Post_id=3, User_id=1, Text_comment='Мне нравится' )
+Comments.objects.create(Post_id=3, User_id=3, Text_comment='Мне нравится' )
+Comments.objects.create(Post_id=3, User_id=2, Text_comment='Так себе новости' )
+
+
+Comments=Comments.objects.all() # получаем все коментарии
+Comments[N].like() # ставим лайки под комментарием с id=N увеличивая рейтинг
+Comments[N].dislike() # ставим диз под комментарием с id=N уменьшая рейтинг
+Posts=Post.objects.all() # получаем все статьи
+Post[N].like() # ставим лайки под статьей\новостью с id=N увеличивая рейтинг
+Post[N].dislike() # ставим диз под статьей\новостью с id=N уменьшая рейтинг
+
+# обновляем рейтинги ползователей
+Author.objects.get(id=1).update_rating()
+Author.objects.get(id=2).update_rating()
+Author.objects.get(id=3).update_rating()
+
+# выводим имя пользователя и рейтинг с самым высоким рейтингом
+Author.objects.order_by('-rating').values_list('user__username', 'rating').first()
+
+# выводим дату добавления, username автора, рейтинг, заголовок и превью лучшей статьи по рейтингу
+Post.objects.filter(Post_News_choice=True).order_by('-Rating_Post').values_list('Create_time','Post_author__user__username','Rating_Post','Title').first()
+Post.objects.filter(Post_News_choice=True).order_by('-Rating_Post').first().preview()
+#2 Вариант
+Post1=Post.objects.filter(Post_News_choice=True).order_by('-Rating_Post').first()
+Post1.Create_time.strftime("%Y-%m-%d %H:%M:%S")
+Rating_Post').values_list('Post_author__user__username','Rating_Post','Title').first()
+Post.objects.filter(Post_News_choice=True).order_by('-Rating_Post').first().preview()
+
+# Выводим все комментарии (дата, пользователь, рейтинг, текст) к лучшей статье
+Post_id = Post.objects.filter(Post_News_choice=True).order_by('-Rating_Post').values_list('id').first()
+Comments.objects.filter(Post__id=Post_id[0]).values_list('Create_time', 'User__username', 'Rating_Post', 'Text_comment')
