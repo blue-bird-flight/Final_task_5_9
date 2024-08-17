@@ -35,6 +35,9 @@ class Post(models.Model):
     Text_post = models.TextField()
     Rating_Post = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.Title
+
     def like(self):
         if self.Rating_Post >= 0:
             self.Rating_Post += 1
